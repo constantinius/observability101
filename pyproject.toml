@@ -27,6 +27,8 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = '-m "not instrumentation"'
+markers = ["instrumentation: run after completing the instrumentation exercises"]
 pythonpath = ["."]
 
 [tool.ruff]

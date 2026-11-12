@@ -21,7 +21,7 @@ This is a small local TODO app used to demonstrate OpenTelemetry with Jaeger, Gr
 - Keep standard-library imports, third-party imports, and application imports grouped and sorted.
 - Initialize instrumentation before constructing the agent/database engine or registering MCP tools. The service entrypoints intentionally have a small group of late application imports with individual `# noqa: E402` comments. Keep these exceptions narrow and explained.
 - Application OTLP exporters target only `otel-collector`; keep tracing backend URLs in `observability/collector.yaml`. Grafana queries Jaeger. SigNoz storage and ingestion stay in `observability/`; do not add backend-specific application exporters.
-- OpenTelemetry is always enabled. Call `init_otel("todo-backend")` or `init_otel("todo-mcp")` with an explicit service name. Do not use service-name environment mutation or optional-provider checks.
+- This checkout is the workshop starter; preserve the instrumentation placeholders until completing [WORKSHOP.md](WORKSHOP.md). In the completed exercises, OpenTelemetry is always enabled. Call `init_otel("todo-backend")` or `init_otel("todo-mcp")` with an explicit service name. Do not use service-name environment mutation or optional-provider checks.
 - Keep HTTP and MCP behavior consistent. Validate inputs with Pydantic and keep persistence logic out of route/tool adapters.
 - Stream agent replies with native run events so tools finish before saving history. Keep the NDJSON response protocol and sanitized Markdown rendering consistent.
 - Preserve per-conversation history and tracing isolation. Never combine histories from different conversation IDs.

@@ -10,13 +10,10 @@ from fastapi import FastAPI, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from opentelemetry import trace
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.trace import StatusCode
 from pydantic import BaseModel, Field
 
-from app.telemetry import init_otel
-
-otel_provider = init_otel("todo-backend")
+# WORKSHOP 1: initialize the todo-backend provider here.
+# isort: split
 
 # Initialize instrumentation before constructing the shared agent and database engine.
 from app import todos  # noqa: E402
@@ -33,11 +30,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="TODO app", lifespan=lifespan)
-FastAPIInstrumentor.instrument_app(
-    app,
-    tracer_provider=otel_provider,
-    exclude_spans=["receive", "send"],
-)
+# WORKSHOP 2: instrument the FastAPI app here.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -132,10 +125,8 @@ async def chat_stream(body: ChatRequest):
             async for text in stream_reply(body.message, str(body.conversation_id)):
                 yield json.dumps({"type": "text", "text": text}) + "\n"
             yield json.dumps({"type": "done"}) + "\n"
-        except Exception as exc:
-            span = trace.get_current_span()
-            span.record_exception(exc)
-            span.set_status(StatusCode.ERROR)
+        except Exception:
+            # WORKSHOP 3: optionally record this failure on a manual span.
             yield (
                 json.dumps(
                     {

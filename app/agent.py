@@ -7,7 +7,6 @@ from collections.abc import AsyncIterator
 from datetime import date
 
 from pydantic_ai import Agent, AgentRunResultEvent
-from pydantic_ai.capabilities import Instrumentation
 from pydantic_ai.mcp import MCPToolset
 from pydantic_ai.messages import PartDeltaEvent, PartStartEvent, TextPart, TextPartDelta
 from pydantic_ai.models.test import TestModel
@@ -27,7 +26,7 @@ agent = Agent(
     model,
     name="todo-assistant",
     defer_model_check=True,
-    capabilities=[Instrumentation()],
+    # WORKSHOP 2: enable agent instrumentation here.
     instructions=(
         "Help the user create, read, update, delete, and filter TODOs using the tools. "
         "Statuses are open, doing, and closed. Tags match exactly; multiple tag "

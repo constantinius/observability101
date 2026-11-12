@@ -85,7 +85,7 @@ MCP is available at http://127.0.0.1:8001/mcp. Tools accept the same create/upda
 
 ## Tracing
 
-OpenTelemetry is always enabled for the browser, API, agent, and MCP service. It sends OTLP traces to `http://otel-collector:4318`; `OTEL_EXPORTER_OTLP_ENDPOINT` configures both Python exporters and the frontend telemetry proxy. Applications know only the collector URL. Backend destinations live in `observability/collector.yaml`. No frontend environment file or enable flags are needed.
+This checkout is the workshop starter: application instrumentation is intentionally incomplete. Follow [WORKSHOP.md](WORKSHOP.md) to enable OpenTelemetry for the browser, API, agent, and MCP service. It sends OTLP traces to `http://otel-collector:4318`; `OTEL_EXPORTER_OTLP_ENDPOINT` configures both Python exporters and the frontend telemetry proxy. Applications know only the collector URL. Backend destinations live in `observability/collector.yaml`. No frontend environment file or enable flags are needed.
 
 ```text
 Browser → Vite /otlp ─┐
@@ -112,9 +112,9 @@ TODO form → HTTP API → shared TODO operations → SQLite
 Chat → HTTP API → agent → MCP → shared TODO operations → SQLite
 ```
 
-Each UI action starts a new OTel trace. Browser requests propagate W3C `traceparent` to the API, which continues them through agent and MCP calls. Vite proxies browser OTLP exports to the shared collector. The chat displays the conversation ID and OTel trace ID.
+After completing the workshop, each UI action starts a new OTel trace. Browser requests propagate W3C `traceparent` to the API, which continues them through agent and MCP calls. Vite proxies browser OTLP exports to the shared collector. The chat displays the conversation ID and OTel trace ID.
 
-One conversation ID is retained per browser tab session, including reloads. The API passes it to Pydantic AI so AI spans carry `gen_ai.conversation.id`. It correlates turns without merging their traces and identifies the persisted history passed to subsequent agent runs.
+One conversation ID is retained per browser tab session, including reloads. After enabling agent instrumentation, the API passes it to Pydantic AI so AI spans carry `gen_ai.conversation.id`. It correlates turns without merging their traces and identifies the persisted history passed to subsequent agent runs.
 
 Jaeger uses in-memory storage; stopping it loses its traces. Stop with `docker compose down`. No model key is needed to test Jaeger with `AI_MODEL=demo`.
 
