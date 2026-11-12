@@ -1,0 +1,71 @@
+include:
+  - observability/compose.yaml
+
+services:
+  frontend:
+    image: node:22-bookworm-slim
+    init: true
+    working_dir: /app/frontend
+    command: sh -c "npm ci && exec npm run dev"
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://backend:8000}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4318}
+    volumes:
+      - ./frontend:/app/frontend
+      - frontend-deps:/app/frontend/node_modules
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: .
+    init: true
+    command: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/demo.db}
+      MCP_URL: ${MCP_URL:-http://mcp:8001/mcp}
+      AI_MODEL: ${AI_MODEL:-demo}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4318}
+    volumes:
+      - ./app:/app/app
+      - ./data:/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      mcp:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+
+  mcp:
+    build: .
+    init: true
+    command: uv run --no-sync uvicorn app.mcp_server:app --host 0.0.0.0 --port 8001 --reload --reload-dir app
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////data/demo.db}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4318}
+    volumes:
+      - ./app:/app/app
+      - ./data:/data
+    ports:
+      - "127.0.0.1:8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8001), 2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      otel-collector:
+        condition: service_started
+
+
+volumes:
+  frontend-deps:

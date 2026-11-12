@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TODO app</title>
+  </head>
+  <body>
+    <main class="workspace">
+      <header class="page-header">
+        <div><p class="eyebrow">YOUR WORKSPACE</p><h1>Tasks <span id="task-count">0</span></h1></div>
+        <button id="new-todo" class="primary" type="button"><span aria-hidden="true">＋</span> New task</button>
+      </header>
+      <section class="task-list" aria-label="Tasks">
+        <form id="filter-form" class="toolbar">
+          <div class="filter-field"><label for="filter-status">Status</label><select id="filter-status">
+            <option value="">All statuses</option><option value="open">Open</option><option value="doing">Doing</option><option value="closed">Closed</option>
+          </select></div>
+          <div class="filter-field tags-filter"><label for="filter-tags">Tags</label><input id="filter-tags" placeholder="work, urgent" /></div>
+          <button id="reset-filters" class="quiet" type="button">Reset</button>
+        </form>
+        <div class="list-heading" aria-hidden="true"><span>Task</span><span>Status</span><span>Due date</span><span>Tags</span></div>
+        <ul id="todos" aria-label="Task list"></ul>
+        <div id="empty" class="empty-state" hidden>
+          <span class="empty-icon" aria-hidden="true">✓</span><h2>No tasks here</h2>
+          <p>Create a task, or adjust your filters.</p>
+        </div>
+      </section>
+      <p id="status" role="status"></p>
+    </main>
+
+    <dialog id="todo-details" class="detail-panel" aria-labelledby="editor-heading">
+      <header class="detail-header"><div><p id="task-reference" class="eyebrow">TASK DETAILS</p><h2 id="editor-heading">New task</h2></div>
+        <button id="close-details" class="icon-button" type="button" aria-label="Close details">×</button>
+      </header>
+      <form id="todo-form">
+        <div class="detail-fields">
+          <p id="details-error" class="form-error" role="alert" hidden></p>
+          <label for="title">Title</label><input id="title" maxlength="200" required placeholder="What needs to get done?" />
+          <label for="text">Description</label><textarea id="text" rows="7" placeholder="Add a few details…"></textarea>
+          <div class="field-pair">
+            <div><label for="todo-status">Status</label><select id="todo-status">
+              <option value="open">Open</option><option value="doing">Doing</option><option value="closed">Closed</option>
+            </select></div>
+            <div><label for="due-date">Due date</label><input id="due-date" type="date" /></div>
+          </div>
+          <label for="tags">Tags</label><input id="tags" placeholder="work, urgent" />
+          <p class="field-hint">Separate tags with commas.</p>
+          <p id="created-at" class="created-at" hidden></p>
+        </div>
+        <footer class="detail-footer"><button id="delete-todo" class="danger quiet" type="button" hidden>Delete task</button><button id="save" class="primary" type="submit">Create task</button></footer>
+      </form>
+    </dialog>
+
+    <details id="chat-panel" class="chat-panel">
+      <summary>
+        <span class="assistant-icon" aria-hidden="true">✦</span>
+        <span class="chat-title">Task assistant<small id="chat-state">Ready when you are</small></span>
+        <button id="expand-chat" class="icon-button" type="button" aria-label="Expand chat" aria-expanded="false">↗</button>
+        <span class="chat-chevron" aria-hidden="true">⌃</span>
+      </summary>
+      <div class="chat-body">
+        <div class="chat-intro"><span id="mode">Connecting…</span><button id="new-conversation" class="quiet" type="button">New conversation</button></div>
+        <div id="messages" role="log" aria-live="polite"><p id="chat-empty" class="chat-empty">A hand with your tasks.<br>Try “Create a task due tomorrow”.</p></div>
+        <form id="chat-form">
+          <label class="sr-only" for="message">Your message</label>
+          <textarea id="message" rows="2" maxlength="2000" required placeholder="Message your assistant…"></textarea>
+          <div class="composer-footer"><span>Shift + Enter for a new line</span><button id="send" class="primary" type="submit">Send</button></div>
+        </form>
+        <details class="trace-details"><summary>Trace details</summary><small id="trace"></small></details>
+      </div>
+    </details>
+    <script type="module" src="/src.js"></script>
+  </body>
+</html>

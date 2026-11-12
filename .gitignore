@@ -1,0 +1,59 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+.envrc
+.direnv/
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local application data and SQLite files
+/data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+
+# Python dependencies, bytecode, and tool caches
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Frontend dependencies and generated output
+node_modules/
+.vite/
+dist/
+build/
+coverage/
+
+# Logs, temporary files, and backups
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# Local editor, assistant, and cloud settings
+.idea/
+.vscode/
+.codex/
+.agents/
+.aws/
+.ssh/
+
+# Operating system files
+.DS_Store
+Thumbs.db

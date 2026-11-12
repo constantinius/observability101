@@ -1,0 +1,23 @@
+# Applications send OTLP here. Only this file knows the trace destinations.
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+
+exporters:
+  otlp_http/jaeger:
+    endpoint: http://jaeger:4318
+  otlp_http/signoz:
+    endpoint: http://signoz-collector:4318
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp_http/jaeger, otlp_http/signoz]
